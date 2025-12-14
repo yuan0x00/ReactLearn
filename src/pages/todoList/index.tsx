@@ -8,11 +8,25 @@ function TodoList() {
     const [task, setTask] = useState('');
     const requestList = useRef<string[]>([]);
     const taskListRef = useRef(null);
+    const lastClickTime = useRef(Date.now())
+    const currentTimeoutId = useRef(null)
+    const timeDelay = 2000;
 
     useEffect(() => {
         if (task || task.trim() != '') {
-            requestList.current.push(task);
-            console.log("InputCurrent->" + task + "\n" + "InputSum->" + requestList.current.length)
+            //防抖：目标是点击后延迟一段时间触发，若在延迟时间内触发，则重置延迟时间。
+            const startTime = Date.now()
+            if (startTime - lastClickTime.current <= timeDelay) {
+                if (currentTimeoutId.current) {
+                    clearTimeout(currentTimeoutId.current)
+                }
+            }
+            currentTimeoutId.current = setTimeout(() => {
+                requestList.current.push(task)
+                console.log("InputCurrent->" + task + "\n" + "InputSum->" + requestList.current.length)
+            }, timeDelay)
+
+            lastClickTime.current = startTime
         }
     }, [task]);
 

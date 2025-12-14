@@ -6,13 +6,13 @@ import TodoTaskList from './components/TodoTaskList'
 function TodoList() {
     const [taskList, setTaskList] = useState<string[]>([]);
     const [task, setTask] = useState('');
-    const [requestList, setRequestList] = useState<string[]>([]);
+    const requestList = useRef<string[]>([]);
     const taskListRef = useRef(null);
 
     useEffect(() => {
-        if (task || !task.trim()) {
-            setRequestList(prev => [...prev, task])
-            console.log("InputCurrent->" + task + "\n" + "InputSum->" + requestList.length)
+        if (task || task.trim() != '') {
+            requestList.current.push(task);
+            console.log("InputCurrent->" + task + "\n" + "InputSum->" + requestList.current.length)
         }
     }, [task]);
 

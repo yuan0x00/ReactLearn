@@ -1,32 +1,23 @@
-import {useEffect, useRef, useState} from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
 import TodoTaskInput from './components/TodoTaskInput'
 import TodoTaskAddButton from './components/TodoTaskAddButton'
 import TodoTaskList from './components/TodoTaskList'
+import {debounce} from './hooks/debounce'
 
 function TodoList() {
     const [taskList, setTaskList] = useState<string[]>([]);
     const [task, setTask] = useState('');
     const requestList = useRef<string[]>([]);
     const taskListRef = useRef(null);
-    const lastClickTime = useRef(Date.now())
-    const currentTimeoutId = useRef(null)
-    const timeDelay = 2000;
+
+    const useDebounce = useRef(debounce((newTask) => {
+        console.log("InputCurrent->" + newTask + "\n" + "InputSum->" + requestList.current.length)
+        requestList.current.push(newTask);
+    }));
 
     useEffect(() => {
         if (task || task.trim() != '') {
-            //防抖：目标是点击后延迟一段时间触发，若在延迟时间内触发，则重置延迟时间。
-            const startTime = Date.now()
-            if (startTime - lastClickTime.current <= timeDelay) {
-                if (currentTimeoutId.current) {
-                    clearTimeout(currentTimeoutId.current)
-                }
-            }
-            currentTimeoutId.current = setTimeout(() => {
-                requestList.current.push(task)
-                console.log("InputCurrent->" + task + "\n" + "InputSum->" + requestList.current.length)
-            }, timeDelay)
-
-            lastClickTime.current = startTime
+            useDebounce.current(task)
         }
     }, [task]);
 

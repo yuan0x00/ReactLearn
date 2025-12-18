@@ -1,11 +1,14 @@
-function TodoTaskList(props) {
-    const {
-        taskList
-    } = props
+import { forwardRef } from "react"
 
-    return taskList.map((task, index) => (
-        <div key={index}>{task}</div>
-    ))
+function TodoTaskList({ taskList, listRef }) {
+    return (
+        <ul ref={listRef}>
+            {taskList.map((task, index) => (
+                <div key={index}>{task}</div>
+            ))}
+        </ul>
+    )
 }
 
-export default TodoTaskList
+export default forwardRef(({ taskList }, listRef) => <TodoTaskList taskList={taskList} listRef={listRef} />);
+    

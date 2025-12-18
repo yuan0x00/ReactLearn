@@ -1,10 +1,14 @@
-function TodoTaskInput(props) {
-    const {
-        value,
-        onChange,
-    } = props
+import { useState } from "react";
 
-    return <input value={value} onChange={onChange}/>
+function TodoTaskInput({ handleChange }) {
+    const [value, setValue] = useState('');
+
+    const handleInputChange = (e) => {
+        setValue(e.target.value);
+        handleChange(e);
+    }
+
+    return <input value={value} onChange={handleInputChange}/>
 }
 
 export default TodoTaskInput

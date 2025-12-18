@@ -1,25 +1,33 @@
-import {useCallback, useEffect, useRef, useState} from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import TodoTaskInput from './components/TodoTaskInput'
 import TodoTaskAddButton from './components/TodoTaskAddButton'
 import TodoTaskList from './components/TodoTaskList'
-import {debounce} from './hooks/debounce'
+import { debounce } from '../../utils/debounce.ts'
 
 function TodoList() {
     const [taskList, setTaskList] = useState<string[]>([]);
-    const [task, setTask] = useState('');
-    const requestList = useRef<string[]>([]);
-    const taskListRef = useRef(null);
+    const [requestCount, setRequestCount] = useState<number>(0);
+    const taskRef = useRef<string>('');
+    const taskListRef = useRef<HTMLDivElement>(null);
 
-    const useDebounce = useRef(debounce((newTask) => {
-        console.log("InputCurrent->" + newTask + "\n" + "InputSum->" + requestList.current.length)
-        requestList.current.push(newTask);
-    }));
+    const handleChange = useCallback(debounce((e) => {
+        const task = e.target.value;
+        if (task || task.trim() != '') {
+            taskRef.current = task;
+            setRequestCount(prevCount => prevCount + 1);
+            console.log(`内容更改，发送请求`);
+        }
+    }, 300), [])
+
+    const handleAdd = () => {
+        if (taskRef.current?.trim()) {
+            setTaskList([...taskList, taskRef.current]);
+        }
+    }
 
     useEffect(() => {
-        if (task || task.trim() != '') {
-            useDebounce.current(task)
-        }
-    }, [task]);
+        console.log(`总共发起了 ${requestCount} 次请求`);
+    }, [requestCount]);
 
     useEffect(() => {
         if (taskListRef.current) {
@@ -28,26 +36,17 @@ function TodoList() {
         }
     }, [taskList]);
 
-    return <>
-        <TodoTaskInput
-            value={task}
-            onChange={e => {
-                setTask(e.target.value)
-            }}/>
+    return (
+        <>
+            <TodoTaskInput handleChange={handleChange}/>
 
-        <TodoTaskAddButton
-            onClick={() => {
-                if (task.trim()) {
-                    setTaskList(prev => [...prev, task]);
-                }
-            }}>
-            添加
-        </TodoTaskAddButton>
+            <TodoTaskAddButton handleClick={handleAdd}>
+                添加
+            </TodoTaskAddButton>
 
-        <div ref={taskListRef}>
-            <TodoTaskList taskList={taskList}/>
-        </div>
-    </>
+            <TodoTaskList ref={taskListRef} taskList={taskList}/>
+        </>
+    )
 }
 
 export default TodoList;

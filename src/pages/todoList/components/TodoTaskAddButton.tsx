@@ -1,10 +1,8 @@
-function TodoTaskAddButton(props) {
-    const {
-        children,
-        onClick
-    } = props
-
-    return <button onClick={onClick}>
+function TodoTaskAddButton({
+    handleClick,
+    children
+}) {
+    return <button onClick={handleClick}>
         {children}
     </button>
 }

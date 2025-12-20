@@ -6,7 +6,7 @@ export function debounce(callback, delay = 2000) {
         }
         timer = setTimeout(() => {
             callback.apply(this, args)
-            timer = null;
-        }, delay);
+            timer = null
+        }, delay)
     }
 }

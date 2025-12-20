@@ -1,6 +1,6 @@
-import { forwardRef } from "react"
+import {forwardRef} from 'react'
 
-function TodoTaskList({ taskList, listRef }) {
+function TodoTaskList({taskList, listRef}) {
     return (
         <ul ref={listRef}>
             {taskList.map((task, index) => (
@@ -10,5 +10,6 @@ function TodoTaskList({ taskList, listRef }) {
     )
 }
 
-export default forwardRef(({ taskList }, listRef) => <TodoTaskList taskList={taskList} listRef={listRef} />);
-    
+export default forwardRef(({taskList}, listRef) => (
+    <TodoTaskList taskList={taskList} listRef={listRef} />
+))

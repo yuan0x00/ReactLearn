@@ -3,12 +3,14 @@ import TodoTaskInput from './components/TodoTaskInput.tsx'
 import TodoTaskAddButton from './components/TodoTaskAddButton.tsx'
 import TodoTaskList from './components/TodoTaskList.tsx'
 import {debounce} from '../../utils/debounce.ts'
+import {useTheme} from '../../utils/UseTheme.tsx'
 
 function TodoList() {
     const [taskList, setTaskList] = useState<string[]>([])
     const [requestCount, setRequestCount] = useState<number>(0)
     const taskRef = useRef<string>('')
     const taskListRef = useRef<HTMLDivElement>(null)
+    const {theme, toggleTheme} = useTheme()
 
     const handleChange = useCallback(
         debounce(e => {
@@ -28,6 +30,10 @@ function TodoList() {
         }
     }
 
+    const handleTheme = () => {
+        toggleTheme()
+    }
+
     useEffect(() => {
         console.log(`总共发起了 ${requestCount} 次请求`)
     }, [requestCount])
@@ -41,6 +47,14 @@ function TodoList() {
 
     return (
         <div className={'full-screen'}>
+            <button
+                style={{
+                    color: theme == 'light' ? 'yellow' : 'red',
+                }}
+                onClick={handleTheme}>
+                {theme}
+            </button>
+
             <TodoTaskInput handleChange={handleChange} />
 
             <TodoTaskAddButton handleClick={handleAdd}>添加</TodoTaskAddButton>
